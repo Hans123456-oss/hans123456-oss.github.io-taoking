@@ -1,0 +1,192 @@
+# Sample workflow for building and deploying a Jekyll site to GitHub Pages
+name: Deploy Jekyll with GitHub Pages dependencies preinstalled
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: fconst currentUser = { id: 1, name: '你', picture: 'https://via.placeholder.com/40' };
+let chatHistory = [];
+
+function sendMessage() {
+    const messageInput = document.getElementById('messageInput');
+    const messageText = messageInput.value.trim();
+    if (messageText) {
+        const message = {
+            sender: currentUser,
+            text: messageText,
+            timestamp: new Date()
+        };
+        chatHistory.push(message);
+        messageInput.value = '';
+        updateChatHistory();
+    }
+}
+
+function updateChatHistory() {
+    const chatHistoryDiv = document.getElementById('chatHistory');
+    chatHistoryDiv.innerHTML = '';
+    chatHistory.forEach(message => {
+        const div = document.createElement('div');
+        div.classList.add('message');
+        if (message.sender.id === currentUser.id) {
+            div.classList.add('sent');
+        }
+        div.innerText = `${message.sender.name}: ${message.text}`;
+        chatHistoryDiv.appendChild(div);
+    });
+    chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+}
+
+// 初始化加载
+updateChatHistory();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聊天应用</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="chat-window">
+            <div class="chat-header">
+                <h2>欢喜少年领袖营😀💬</h2>
+            </div>
+            <div id="chatHistory" class="chat-history"></div>
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="输入消息...">
+                <button onclick="sendMessage()">发送</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f9;
+}
+
+.app-container {
+    width: 80%;
+    max-width: 800px;
+    height: 80%;
+    max-height: 800px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.chat-window {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.chat-header {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+#chatHistory {
+    flex-grow: 1;
+    margin-bottom: 10px;
+    overflow-y: auto;
+}
+
+#chatHistory .message {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #e0e0e0;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+#chatHistory .message.sent {
+    background-color: #dcf8c6;
+    text-align: right;
+    margin-left: auto;
+}
+
+#messageInput {
+    width: calc(100% - 110px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    transition: border-color 0.3s;
+}
+
+#messageInput:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}alse
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
